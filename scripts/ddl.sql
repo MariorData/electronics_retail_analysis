@@ -1,6 +1,5 @@
 
 
-
 IF OBJECT_ID('stg_dimcustomer', 'U') IS NOT NULL 
 DROP TABLE stg_dimcustomer; 
 
@@ -83,7 +82,7 @@ CREATE TABLE stg_dimstores (
 	StoreKey            INT PRIMARY KEY,
 	Country		        NVARCHAR(50),
 	State               NVARCHAR(50),
-	Square_Meters       DECIMAL(8,2),
+	Square_Meters       NVARCHAR(50),
 	OpenDate			NVARCHAR(50)
 );
 
@@ -95,7 +94,7 @@ CREATE TABLE dimstores (
 	StoreKey            INT PRIMARY KEY,
 	Country		        NVARCHAR(50),
 	State               NVARCHAR(50),
-	Square_Meters       DECIMAL(8,2),
+	Square_Meters       INT,
 	OpenDate			DATE
 );
 GO
@@ -155,3 +154,7 @@ CREATE TABLE sales (
     Quantity            INT,
     CurrencyCode        NVARCHAR(10),
 );
+
+
+
+
