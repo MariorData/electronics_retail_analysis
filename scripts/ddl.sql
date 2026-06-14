@@ -1,5 +1,6 @@
 
 
+
 IF OBJECT_ID('stg_dimcustomer', 'U') IS NOT NULL 
 DROP TABLE stg_dimcustomer; 
 
@@ -47,11 +48,11 @@ CREATE TABLE stg_dimproduct (
 	ProductName         NVARCHAR(100),
 	Brand               NVARCHAR(50),
 	Color               NVARCHAR(50),
-	UnitCostUSD         DECIMAL(10,3),
-	UnitPriceUSD        DECIMAL(10,3),
-	SubcategoryKey      INT,
+	UnitCostUSD         NVARCHAR(50),
+	UnitPriceUSD        NVARCHAR(50),
+	SubcategoryKey      NVARCHAR(10),
 	Subcategory         NVARCHAR(50),
-	CategoryKey         INT,
+	CategoryKey         NVARCHAR(10),
 	Category            NVARCHAR(50)
 );
 GO
@@ -67,10 +68,10 @@ CREATE TABLE dimproduct (
 	Color               NVARCHAR(50),
 	UnitCostUSD         DECIMAL(10,3),
 	UnitPriceUSD        DECIMAL(10,3),
-	SubcategoryKey      INT,
+	SubcategoryKey      NVARCHAR(10),
 	Subcategory         NVARCHAR(50),
-	CategoryKey         INT,
-	Category            NVARCHAR(50)
+	CategoryKey         NVARCHAR(10),
+	Category            NVARCHAR(50),
 );
 GO
 
@@ -154,4 +155,3 @@ CREATE TABLE sales (
     Quantity            INT,
     CurrencyCode        NVARCHAR(10),
 );
-
