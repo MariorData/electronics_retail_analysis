@@ -79,6 +79,34 @@ BEGIN
 			Category
 		FROM stg_dimproduct;
 
+		TRUNCATE TABLE stg_dimstores;
+
+		BULK INSERT stg_dimstores
+		FROM 'C:\SQL_projects\global_Electronics_retailer\Stores.csv'
+		WITH (
+			FIRSTROW = 2,
+			FIELDTERMINATOR = ',',
+			ROWTERMINATOR = '0x0a',
+			CODEPAGE = '65001',
+			DATAFILETYPE = 'char',
+			TABLOCK
+		);
+		TRUNCATE TABLE dimstores
+		INSERT INTO dimstores (
+			StoreKey,
+			Country,
+			State,
+			Square_Meters,
+			OpenDate
+		)
+		SELECT
+			StoreKey,
+			Country,
+			State,
+			TRY_CONVERT(INT, Square_Meters),
+			TRY_CONVERT(date, OpenDate, 101)
+		FROM stg_dimstores;
+
 
 
 	END TRY
@@ -91,3 +119,4 @@ BEGIN
 		PRINT '================================================'
 	END CATCH
 END
+		
