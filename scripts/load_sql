@@ -106,8 +106,64 @@ BEGIN
 			TRY_CONVERT(INT, Square_Meters),
 			TRY_CONVERT(date, OpenDate, 101)
 		FROM stg_dimstores;
+		TRUNCATE TABLE stg_dimexcrates;
 
+		BULK INSERT stg_dimexcrates
+		FROM 'C:\SQL_projects\global_Electronics_retailer\Exchange_Rates.csv'
+		WITH (
+			FIRSTROW = 2,
+			FIELDTERMINATOR = ',',
+			ROWTERMINATOR = '0x0a',
+			CODEPAGE = '65001',
+			DATAFILETYPE = 'char',
+			TABLOCK
+		);
+		TRUNCATE TABLE dimexcrates
+		INSERT INTO dimexcrates (
+			Date,
+			Currency,
+			Exchange
+		)
+		SELECT
+			TRY_CONVERT(date, Date, 101),
+			Currency,
+			Exchange
+		FROM stg_dimexcrates;
+		TRUNCATE TABLE stg_sales;
 
+		BULK INSERT stg_sales
+		FROM 'C:\SQL_projects\global_Electronics_retailer\Sales.csv'
+		WITH (
+			FIRSTROW = 2,
+			FIELDTERMINATOR = ',',
+			ROWTERMINATOR = '0x0a',
+			CODEPAGE = '65001',
+			DATAFILETYPE = 'char',
+			TABLOCK
+		);
+		TRUNCATE TABLE sales
+		INSERT INTO sales (
+			OrderNumber,
+			LineItem,
+			OrderDate,
+			DeliveryDate,
+			CustomerKey,
+			StorerKey,
+			ProductKey,
+			Quantity,
+			CurrencyCode
+		)
+		SELECT
+			OrderNumber,
+			LineItem,
+			TRY_CONVERT(date, OrderDate, 101),
+			TRY_CONVERT(date, DeliveryDate, 101),
+			CustomerKey,
+			StorerKey,
+			ProductKey,
+			Quantity,
+			CurrencyCode
+		FROM stg_sales;
 
 	END TRY
 	BEGIN CATCH
