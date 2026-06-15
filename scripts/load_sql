@@ -129,17 +129,14 @@ BEGIN
 			Currency,
 			Exchange
 		FROM stg_dimexcrates;
-		TRUNCATE TABLE stg_sales;
+	TRUNCATE TABLE stg_sales;
 
 		BULK INSERT stg_sales
 		FROM 'C:\SQL_projects\global_Electronics_retailer\Sales.csv'
 		WITH (
 			FIRSTROW = 2,
 			FIELDTERMINATOR = ',',
-			ROWTERMINATOR = '0x0a',
-			CODEPAGE = '65001',
-			DATAFILETYPE = 'char',
-			TABLOCK
+			ROWTERMINATOR = '0x0d0a'
 		);
 		TRUNCATE TABLE sales
 		INSERT INTO sales (
@@ -164,7 +161,6 @@ BEGIN
 			Quantity,
 			CurrencyCode
 		FROM stg_sales;
-
 	END TRY
 	BEGIN CATCH
 		PRINT '================================================'
