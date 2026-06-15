@@ -121,11 +121,11 @@ BEGIN
 		TRUNCATE TABLE dimexcrates
 		INSERT INTO dimexcrates (
 			Date,
-			Currency,
+			CurrencyDate,
 			Exchange
 		)
 		SELECT
-			TRY_CONVERT(date, Date, 101),
+			TRY_CONVERT(date, CurrencyDate, 101),
 			Currency,
 			Exchange
 		FROM stg_dimexcrates;
