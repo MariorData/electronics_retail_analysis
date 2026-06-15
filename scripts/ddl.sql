@@ -104,7 +104,7 @@ IF OBJECT_ID('stg_dimexcrates', 'U') IS NOT NULL
 GO
 
 CREATE TABLE stg_dimexcrates (
-	Date				NVARCHAR(50),
+	CurrencyDate				NVARCHAR(50),
 	Currency			NVARCHAR(10),
 	Exchange			DECIMAL (8,4),
 	
@@ -117,7 +117,7 @@ IF OBJECT_ID('dimexcrates', 'U') IS NOT NULL
 GO
 
 CREATE TABLE dimexcrates (
-	Date				DATE,
+	CurrencyDate				DATE,
 	Currency			NVARCHAR(10),
 	Exchange			DECIMAL (8,4),
 	
