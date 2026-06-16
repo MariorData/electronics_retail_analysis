@@ -104,7 +104,11 @@ BEGIN
 			Country,
 			State,
 			TRY_CONVERT(INT, Square_Meters),
-			TRY_CONVERT(date, OpenDate, 101)
+			TRY_CONVERT(
+		    date,
+		    REPLACE(REPLACE(OpenDate, CHAR(13), ''), CHAR(10), ''),
+		    101
+		)
 		FROM stg_dimstores;
 		TRUNCATE TABLE stg_dimexcrates;
 
