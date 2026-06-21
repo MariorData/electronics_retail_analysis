@@ -151,3 +151,48 @@ FROM
     GROUP BY DATETRUNC(month, orderdate)
 ) t
 
+/*
+===============================================================================
+Ranking Analysis
+===============================================================================
+Purpose:
+    - To rank dimensions (e.g., products, customers) based on performance or other metrics.
+    - To identify top performers or laggards.
+
+SQL Functions Used:
+    - Window Ranking Functions: RANK(), DENSE_RANK(), ROW_NUMBER(), TOP
+    - Clauses: GROUP BY, ORDER BY
+===============================================================================
+*/
+
+-- Which 10 products Generating the Highest Revenue?
+-- Simple Ranking
+SELECT TOP 10
+    p.ProductName,
+    SUM(s.Quantity*p.UnitPriceUSD*r.Exchange) AS total_sales
+FROM sales s
+LEFT JOIN dimproduct p
+	ON s.ProductKey=p.ProductKey
+LEFT JOIN dimexcrates r
+	ON s.CurrencyCode=r.Currency
+	AND s.OrderDate=r.CurrencyDate
+GROUP BY p.ProductName
+ORDER BY total_sales DESC;
+
+-- Complex but Flexibly Ranking Using Window Functions
+SELECT *
+FROM ( 
+	SELECT
+    p.ProductName,
+    SUM(s.Quantity*p.UnitPriceUSD*r.Exchange) AS total_sales,
+	RANK() OVER (ORDER BY SUM(s.Quantity*p.UnitPriceUSD*r.Exchange) DESC) AS rank_products
+	FROM sales s
+	LEFT JOIN dimproduct p
+		ON s.ProductKey=p.ProductKey
+	LEFT JOIN dimexcrates r
+		ON s.CurrencyCode=r.Currency
+		AND s.OrderDate=r.CurrencyDate
+	GROUP BY p.ProductName          
+	) AS ranked_products
+	WHERE rank_products <= 10;
+
