@@ -100,3 +100,21 @@ LEFT JOIN dimproduct p
 LEFT JOIN dimexcrates r
 	ON s.CurrencyCode=r.Currency
 	AND s.OrderDate=r.CurrencyDate
+
+
+--Sales over time with mom change
+
+SELECT  YEAR(orderdate)*100+MONTH(orderdate) AS YearMonth ,
+SUM(s.Quantity*p.UnitPriceUSD*r.Exchange) AS Sales_Amount,
+LAG(SUM(s.Quantity*p.UnitPriceUSD*r.Exchange),1,0) OVER (ORDER BY YEAR(orderdate)*100+MONTH(orderdate)) AS PM_Sales_Amount,
+SUM(s.Quantity*p.UnitPriceUSD*r.Exchange)-
+	LAG(SUM(s.Quantity*p.UnitPriceUSD*r.Exchange),1,0) OVER (ORDER BY YEAR(orderdate)*100+MONTH(orderdate)) AS Sales_Diff_vs_PM
+
+FROM sales s
+LEFT JOIN dimproduct p
+	ON s.ProductKey=p.ProductKey
+LEFT JOIN dimexcrates r
+	ON s.CurrencyCode=r.Currency
+	AND s.OrderDate=r.CurrencyDate
+GROUP BY YEAR(orderdate)*100+MONTH(orderdate)
+
