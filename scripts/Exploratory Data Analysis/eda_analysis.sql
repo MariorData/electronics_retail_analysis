@@ -56,11 +56,47 @@ FROM sales
 
 UNION ALL 
 
+SELECT 'AVG_Order_Sales' ,
+SUM(s.Quantity*p.UnitPriceUSD*r.Exchange)/
+COUNT(DISTINCT(OrderNumber))
+FROM sales s
+LEFT JOIN dimproduct p
+	ON s.ProductKey=p.ProductKey
+LEFT JOIN dimexcrates r
+	ON s.CurrencyCode=r.Currency
+	AND s.OrderDate=r.CurrencyDate
+
+
+UNION ALL 
+
 SELECT 'No_customers', COUNT(DISTINCT(CustomerKey))
 FROM sales
+
+UNION ALL 
+
+SELECT 'AVG_Customer_Sales' ,
+SUM(s.Quantity*p.UnitPriceUSD*r.Exchange)/
+COUNT(DISTINCT(CustomerKey))
+FROM sales s
+LEFT JOIN dimproduct p
+	ON s.ProductKey=p.ProductKey
+LEFT JOIN dimexcrates r
+	ON s.CurrencyCode=r.Currency
+	AND s.OrderDate=r.CurrencyDate
 
 UNION ALL 
 
 SELECT 'No_products', COUNT(DISTINCT(ProductKey))
 FROM sales
 
+UNION ALL 
+
+SELECT 'AVG_Product_Sales' ,
+SUM(s.Quantity*p.UnitPriceUSD*r.Exchange)/
+COUNT(DISTINCT(s.ProductKey))
+FROM sales s
+LEFT JOIN dimproduct p
+	ON s.ProductKey=p.ProductKey
+LEFT JOIN dimexcrates r
+	ON s.CurrencyCode=r.Currency
+	AND s.OrderDate=r.CurrencyDate
