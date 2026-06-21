@@ -118,3 +118,36 @@ LEFT JOIN dimexcrates r
 	AND s.OrderDate=r.CurrencyDate
 GROUP BY YEAR(orderdate)*100+MONTH(orderdate)
 
+/*
+===============================================================================
+Purpose:
+    - To calculate running totals or moving averages for key metrics.
+    - To track performance over time cumulatively.
+    - Useful for growth analysis or identifying long-term trends.
+
+SQL Functions Used:
+    - Window Functions: SUM() OVER(), AVG() OVER()
+===============================================================================
+*/
+
+-- Calculate the total sales per month 
+-- and the running total of sales over time by year
+SELECT
+	order_date,
+	total_sales,
+	SUM(total_sales) OVER (PARTITION BY YEAR(order_date) ORDER BY order_date) AS year_running_total_sales,
+    AVG(total_sales) OVER (ORDER BY order_date ROWS BETWEEN 5 PRECEDING AND CURRENT ROW) AS moving_sales_avg_6m
+FROM
+(
+    SELECT 
+        DATETRUNC(month, orderdate) AS order_date,
+        SUM(s.Quantity*p.UnitPriceUSD*r.Exchange) AS total_sales
+    FROM sales s
+	LEFT JOIN dimproduct p
+	ON s.ProductKey=p.ProductKey
+	LEFT JOIN dimexcrates r
+	ON s.CurrencyCode=r.Currency
+	AND s.OrderDate=r.CurrencyDate
+    GROUP BY DATETRUNC(month, orderdate)
+) t
+
